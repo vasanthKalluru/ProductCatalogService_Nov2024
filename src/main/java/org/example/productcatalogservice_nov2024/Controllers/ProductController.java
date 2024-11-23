@@ -31,8 +31,7 @@ public class ProductController {
 
         if(products!=null && !products.isEmpty()) {
             for(Product product : products) {
-                ProductDto productDto = new ProductDto();
-                productDtos.add(productDto);
+                productDtos.add(from(product));
             }
             return new ResponseEntity<>(productDtos, HttpStatus.OK);
         }
