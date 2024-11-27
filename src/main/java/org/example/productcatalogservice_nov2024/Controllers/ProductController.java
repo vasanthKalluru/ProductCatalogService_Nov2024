@@ -1,5 +1,6 @@
 package org.example.productcatalogservice_nov2024.Controllers;
 
+import org.example.productcatalogservice_nov2024.ExceptionHandlers.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,10 @@ public class ProductController {
 
     @PutMapping("/products/{id}")
     public ResponseEntity<ProductDto> replaceProduct(@PathVariable("id") long productId, @RequestBody ProductDto productDto) {
+        if(productId <= 0 || productId > 20){
+            throw new ResourceNotFoundException("Invalid product id");
+        }
+
         Product product = productService.replaceProduct(productId,from(productDto));
         logger.info("Inside replaceProduct in productController the product is: "+product.toString());
         if(product !=null){
