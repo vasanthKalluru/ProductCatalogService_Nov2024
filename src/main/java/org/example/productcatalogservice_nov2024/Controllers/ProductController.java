@@ -47,8 +47,9 @@ public class ProductController {
 
     @GetMapping("products/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") long productId) {
-        if(productId <= 0 || productId > 20)
-            return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+        if(productId <= 0 || productId > 20){
+            throw new RuntimeException("Invalid product id");
+        }
 
         Product product = productService.getProductById(productId);
         if (product == null) {return null;}
@@ -89,7 +90,6 @@ public class ProductController {
         return productDto;
     }
 
-
     private Product from  (ProductDto productDto) {
         Product product = new Product();
         product.setId(productDto.getId());
@@ -107,6 +107,9 @@ public class ProductController {
         return product;
     }
 
-
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
 }
