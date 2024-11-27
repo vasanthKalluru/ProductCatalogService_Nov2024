@@ -1,5 +1,6 @@
 package org.example.productcatalogservice_nov2024.services;
 
+import org.example.productcatalogservice_nov2024.clients.FakeStoreApiClient;
 import org.example.productcatalogservice_nov2024.dtos.CategoryDto;
 import org.example.productcatalogservice_nov2024.dtos.FakeStoreProductDto;
 import org.example.productcatalogservice_nov2024.models.Category;
@@ -27,6 +28,9 @@ public class ProductService implements IproductService {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
+    @Autowired
+    private FakeStoreApiClient fakeStoreApiClient;
+
     public List<Product> getAllProducts() {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductDto[]> fakeStoreProductDtoResponseEntity = restTemplate.getForEntity("https://fakestoreapi.com/products", FakeStoreProductDto[].class);
@@ -42,10 +46,9 @@ public class ProductService implements IproductService {
     }
 
     public Product getProductById(Long id) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        ResponseEntity<FakeStoreProductDto> fakeStoreProductDtoResponseEntity = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class, id);
-        if(fakeStoreProductDtoResponseEntity.getStatusCode().is2xxSuccessful() && fakeStoreProductDtoResponseEntity.getBody() != null) {
-            return from(fakeStoreProductDtoResponseEntity.getBody());
+        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProductById(id);
+        if(fakeStoreProductDto != null) {
+            return from(fakeStoreProductDto);
         }
         return null;
     }
@@ -71,13 +74,6 @@ public class ProductService implements IproductService {
         return restTemplate.execute(url, httpMethod, requestCallback, responseExtractor, uriVariables);
     }
 
-
-    private Long id;
-    private String title;
-    private String description;
-    private String imageUrl;
-    private Double amount;
-    private CategoryDto category;
 
     private Product from (FakeStoreProductDto fakeStoreProductDto) {
         Product product = new Product();
