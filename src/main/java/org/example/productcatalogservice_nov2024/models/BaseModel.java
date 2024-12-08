@@ -10,7 +10,6 @@ import java.util.Date;
 
 @Setter
 @Getter
-@Entity
 @MappedSuperclass
 public abstract class BaseModel {
     @Id

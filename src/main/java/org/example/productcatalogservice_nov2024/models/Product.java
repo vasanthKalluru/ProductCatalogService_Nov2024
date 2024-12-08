@@ -1,5 +1,6 @@
 package org.example.productcatalogservice_nov2024.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class Product extends BaseModel {
     private String imageUrl;
     private Double amount;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Category category;
     private Boolean isPrimeSpecific;
 }
